@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 
 @Entity('events')
@@ -9,16 +9,16 @@ export class Event {
   @Column()
   title: string;
 
-  @Column('text')
+  @Column()
   description: string;
 
-  @Column({ type: 'timestamp' })
+  @Column()
   dateTime: Date;
 
   @Column()
   location: string;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ nullable: true })
   capacity: number;
 
   @Column({ default: true })
@@ -27,7 +27,6 @@ export class Event {
   @ManyToOne(() => User, (user) => user.organizedEvents)
   organizer: User;
 
-  @ManyToMany(() => User, (user) => user.participatedEvents)
-  @JoinTable({ name: 'event_participants' })
+  @ManyToMany(() => User, (user) => user.attendedEvents)
   participants: User[];
 }

@@ -18,4 +18,11 @@ export class UsersService {
     const newUser = this.usersRepository.create({ name, email, passwordHash });
     return this.usersRepository.save(newUser);
   }
+
+  async getMyEvents(userId: number) {
+    return this.usersRepository.findOne({
+      where: { id: userId },
+      relations: ['organizedEvents', 'attendedEvents'],
+    });
+  }
 }
