@@ -59,8 +59,10 @@ export default function EventDetails() {
         headers: { Authorization: `Bearer ${token}` }
       });
       navigate('/'); 
-    } catch (error) {
-      alert('Помилка при видаленні');
+    } catch (error: any) {
+      const serverMessage = error.response?.data?.message || 'Невідома помилка';
+      alert(`Помилка бекенду: ${serverMessage}`);
+      console.error('Деталі помилки:', error.response?.data);
     }
   };
 

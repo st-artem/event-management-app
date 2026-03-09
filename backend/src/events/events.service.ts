@@ -70,10 +70,22 @@ export class EventsService {
   }
 
   async remove(id: number, userId: number): Promise<void> {
-    const event = await this.findOne(id);
+    const event = await this.eventsRepository.findOne({
+      where: { id },
+      relations: ['organizer', 'participants'],
+    });
+
+    if (!event) {
+      throw new Error('Event not found'); 
+    }
     
     if (event.organizer.id !== userId) {
       throw new ForbiddenException('You can only delete your own events');
+    }
+
+    if (event.participants && event.participants.length > 0) {
+      event.participants = [];
+      await this.eventsRepository.save(event);
     }
 
     await this.eventsRepository.remove(event);

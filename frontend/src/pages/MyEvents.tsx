@@ -26,18 +26,45 @@ export default function MyEvents() {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/me/events`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const combinedEvents = [
-          ...(res.data.organizedEvents || []), 
-          ...(res.data.attendedEvents || [])
-        ];
+
+        const data = res.data;
+        let combinedEvents = [];
+
+        if (Array.isArray(data)) {
+          combinedEvents = data; 
+        } else {
+          combinedEvents = [
+            ...(data?.organizedEvents || []), 
+            ...(data?.attendedEvents || [])
+          ];
+        }
+
         setEvents(combinedEvents);
       } catch (error) {
-        console.error('Помилка завантаження календаря:', error);
+        console.warn('Ендпоінт /users/me/events не відповідає');
+        
+        try {
+          const fallbackRes = await axios.get(`${import.meta.env.VITE_API_URL}/events`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const currentUserId = token ? JSON.parse(atob(token.split('.')[1])).sub : null;
+          
+          const myFilteredEvents = fallbackRes.data.filter((e: any) => 
+            e.organizer?.id === currentUserId || 
+            e.participants?.some((p: any) => p.id === currentUserId)
+          );
+          setEvents(myFilteredEvents);
+        } catch (err) {
+          console.error('Помилка резервного завантаження:', err);
+        }
       } finally {
         setLoading(false);
       }
     };
-    fetchMyEvents();
+
+    if (token) {
+      fetchMyEvents();
+    }
   }, [token]);
 
   const year = currentDate.getFullYear();
