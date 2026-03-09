@@ -6,6 +6,10 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { EventsModule } from './events/events.module';
 import { AuthModule } from './auth/auth.module';
+import { SeedService } from './seed.service';
+import { User } from './users/entities/user.entity';
+import { Event } from './events/entities/event.entity';
+
 
 @Module({
   imports: [
@@ -22,11 +26,12 @@ import { AuthModule } from './auth/auth.module';
       autoLoadEntities: true, 
       synchronize: true, 
     }),
+    TypeOrmModule.forFeature([User, Event]), 
     UsersModule,
     EventsModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SeedService], 
 })
 export class AppModule {}

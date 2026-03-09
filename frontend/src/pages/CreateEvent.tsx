@@ -29,7 +29,7 @@ export default function CreateEvent() {
       const formattedDate = new Date(dateTime).toISOString();
 
       const res = await axios.post(
-        'http://localhost:3000/events',
+        `${import.meta.env.VITE_API_URL}/events`,
         {
           title,
           description,

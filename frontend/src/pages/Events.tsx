@@ -26,7 +26,7 @@ export default function Events() {
 
   const fetchEvents = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/events', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/events`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setEvents(res.data);
@@ -44,7 +44,7 @@ export default function Events() {
 
   const handleJoin = async (eventId: number) => {
     try {
-      await axios.post(`http://localhost:3000/events/${eventId}/join`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post(`${import.meta.env.VITE_API_URL}/events/${eventId}/join`, {}, { headers: { Authorization: `Bearer ${token}` } });
       fetchEvents(); 
     } catch (error: any) {
       alert(error.response?.data?.message || 'Помилка приєднання');
@@ -53,7 +53,7 @@ export default function Events() {
 
   const handleLeave = async (eventId: number) => {
     try {
-      await axios.post(`http://localhost:3000/events/${eventId}/leave`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post(`${import.meta.env.VITE_API_URL}/events/${eventId}/leave`, {}, { headers: { Authorization: `Bearer ${token}` } });
       fetchEvents(); 
     } catch (error: any) {
       alert('Помилка при виході');

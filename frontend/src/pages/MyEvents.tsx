@@ -23,7 +23,7 @@ export default function MyEvents() {
   useEffect(() => {
     const fetchMyEvents = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/users/me/events', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/me/events`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const combinedEvents = [

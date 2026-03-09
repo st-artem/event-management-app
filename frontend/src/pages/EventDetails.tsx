@@ -36,7 +36,7 @@ export default function EventDetails() {
 
   const fetchEvent = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/events/${id}`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/events/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setEvent(res.data);
@@ -53,9 +53,9 @@ export default function EventDetails() {
   }, [id]);
 
   const handleDelete = async () => {
-    if (!window.confirm('Ви впевнені, що хочете видалити цю подію?')) return;
+    if (!window.confirm('Are you sure you want to delete this event?')) return;
     try {
-      await axios.delete(`http://localhost:3000/events/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/events/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       navigate('/'); 
@@ -66,7 +66,7 @@ export default function EventDetails() {
 
   const handleUpdate = async () => {
     try {
-      await axios.patch(`http://localhost:3000/events/${id}`, editData, {
+      await axios.patch(`${import.meta.env.VITE_API_URL}/events/${id}`, editData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setIsEditing(false);
@@ -78,7 +78,7 @@ export default function EventDetails() {
 
   const handleLeave = async () => {
     try {
-      await axios.post(`http://localhost:3000/events/${id}/leave`, {}, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/events/${id}/leave`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchEvent();
@@ -89,7 +89,7 @@ export default function EventDetails() {
 
   const handleJoin = async () => {
     try {
-      await axios.post(`http://localhost:3000/events/${id}/join`, {}, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/events/${id}/join`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchEvent();

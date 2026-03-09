@@ -22,12 +22,12 @@ export default function Login() {
 
     try {
       if (isLogin) {
-        const res = await axios.post('http://localhost:3000/auth/login', { email, password });
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
         login(res.data.access_token);
         navigate('/'); 
       } else {
-        await axios.post('http://localhost:3000/auth/register', { email, password, name });
-        const res = await axios.post('http://localhost:3000/auth/login', { email, password });
+        await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, { email, password, name });
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
         login(res.data.access_token);
         navigate('/');
       }
