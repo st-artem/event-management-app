@@ -87,6 +87,17 @@ export default function EventDetails() {
     }
   };
 
+  const handleJoin = async () => {
+    try {
+      await axios.post(`http://localhost:3000/events/${id}/join`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchEvent();
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Помилка приєднання');
+    }
+  };
+
   if (loading) return <div className="min-h-screen bg-brand-white flex justify-center items-center">Завантаження...</div>;
   if (!event) return <div className="min-h-screen bg-brand-white flex justify-center items-center">Подію не знайдено</div>;
 
@@ -109,7 +120,6 @@ export default function EventDetails() {
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="p-8">
             <div className="flex justify-between items-start mb-6">
-              {/* РЕЖИМ РЕДАГУВАННЯ АБО ПЕРЕГЛЯДУ */}
               {isEditing ? (
                 <div className="flex-1 mr-4">
                   <input 
@@ -136,7 +146,6 @@ export default function EventDetails() {
                 </div>
               )}
 
-              {/* КНОПКИ ОРГАНІЗАТОРА */}
               {isOrganizer && !isEditing && (
                 <div className="flex gap-2">
                   <button onClick={() => setIsEditing(true)} className="p-2 text-brand-blue bg-blue-50 rounded-lg hover:bg-blue-100 transition">
@@ -170,7 +179,6 @@ export default function EventDetails() {
               </div>
             </div>
 
-            {/* ДІЯ ДЛЯ УЧАСНИКА (Leave) */}
             {!isOrganizer && isParticipant && (
                <div className="mt-6 flex justify-end">
                   <button onClick={handleLeave} className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
@@ -178,9 +186,22 @@ export default function EventDetails() {
                   </button>
                </div>
             )}
+
+            {!isOrganizer && !isParticipant && !isFull && (
+               <div className="mt-6 flex justify-end">
+                  <button onClick={handleJoin} className="bg-brand-green hover:bg-[#1db388] text-white font-semibold py-2 px-6 rounded-lg transition-colors">
+                    Join Event
+                  </button>
+               </div>
+            )}
+
+            {!isOrganizer && !isParticipant && isFull && (
+              <div className="mt-6 p-4 bg-orange-50 text-orange-600 rounded-lg text-center font-medium border border-orange-200">
+                This event is fully booked. No more spots available.
+              </div>
+            )}
           </div>
 
-          {/* СПИСОК УЧАСНИКІВ */}
           <div className="border-t border-gray-200 p-8">
             <h3 className="text-xl font-bold text-brand-dark mb-4">Participants ({event.participants.length})</h3>
             {event.participants.length > 0 ? (
