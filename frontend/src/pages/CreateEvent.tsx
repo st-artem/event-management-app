@@ -43,70 +43,128 @@ export default function CreateEvent() {
 
       navigate(`/events/${res.data.id}`);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Помилка при створенні події');
+      setError(err.response?.data?.message || 'Error creating event');
     } finally {
       setLoading(false);
     }
   };
 
+  const inputStyles = "w-full px-4 py-2 bg-white dark:bg-brand-darkBg border border-gray-200 dark:border-brand-darkBorder rounded-lg focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-brand-darkText";
+
   return (
-    <div className="min-h-screen bg-brand-white">
+    <div className="min-h-screen bg-brand-white dark:bg-brand-darkBg transition-colors">
       <Navbar />
 
       <main className="max-w-3xl mx-auto px-8 pb-12">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-brand-dark mb-2">Create New Event</h1>
-          <p className="text-gray-500">Fill in the details to host your event.</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">Create New Event</h1>
+          <p className="text-gray-500 dark:text-brand-darkText transition-colors">Fill in the details to host your event.</p>
         </div>
 
-        {error && <div className="bg-red-50 text-red-500 p-4 rounded-lg mb-6">{error}</div>}
+        {error && <div className="bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400 p-4 rounded-lg mb-6 border border-red-100 dark:border-red-800/50">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl border border-brand-gray/30 shadow-sm space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-brand-darkCard p-8 rounded-2xl border border-gray-200 dark:border-brand-darkBorder shadow-sm space-y-6 transition-colors">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             <div className="col-span-1 md:col-span-2">
-              <label className="block text-sm font-medium text-brand-dark mb-1">Event Title *</label>
-              <input required value={title} onChange={(e) => setTitle(e.target.value)} type="text" className="w-full px-4 py-2 border border-brand-gray rounded-lg focus:ring-2 focus:ring-brand-indigo outline-none" placeholder="e.g. React Meetup" />
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-200 mb-1">Event Title *</label>
+              <input 
+                required 
+                value={title} 
+                onChange={(e) => setTitle(e.target.value)} 
+                type="text" 
+                className={inputStyles} 
+                placeholder="e.g. React Meetup" 
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-brand-dark mb-1">Date & Time *</label>
-              <input required min={todayDateStr} value={dateTime} onChange={(e) => setDateTime(e.target.value)} type="datetime-local" className="w-full px-4 py-2 border border-brand-gray rounded-lg focus:ring-2 focus:ring-brand-indigo outline-none" />
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-200 mb-1">Date & Time *</label>
+              <input 
+                required 
+                min={todayDateStr} 
+                value={dateTime} 
+                onChange={(e) => setDateTime(e.target.value)} 
+                type="datetime-local" 
+                className={inputStyles} 
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-brand-dark mb-1">Location *</label>
-              <input required value={location} onChange={(e) => setLocation(e.target.value)} type="text" className="w-full px-4 py-2 border border-brand-gray rounded-lg focus:ring-2 focus:ring-brand-indigo outline-none" placeholder="City, Venue" />
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-200 mb-1">Location *</label>
+              <input 
+                required 
+                value={location} 
+                onChange={(e) => setLocation(e.target.value)} 
+                type="text" 
+                className={inputStyles} 
+                placeholder="City, Venue" 
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-brand-dark mb-1">Capacity (optional)</label>
-              <input min="1" value={capacity} onChange={(e) => setCapacity(e.target.value === '' ? '' : Number(e.target.value))} type="number" className="w-full px-4 py-2 border border-brand-gray rounded-lg focus:ring-2 focus:ring-brand-indigo outline-none" placeholder="Unlimited if empty" />
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-200 mb-1">Capacity (optional)</label>
+              <input 
+                min="1" 
+                value={capacity} 
+                onChange={(e) => setCapacity(e.target.value === '' ? '' : Number(e.target.value))} 
+                type="number" 
+                className={inputStyles} 
+                placeholder="Unlimited if empty" 
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-brand-dark mb-2">Visibility *</label>
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-200 mb-2">Visibility *</label>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="visibility" checked={isPublic === true} onChange={() => setIsPublic(true)} className="text-brand-indigo focus:ring-brand-indigo w-4 h-4" />
-                  <span className="text-brand-dark text-sm">Public</span>
+                  <input 
+                    type="radio" 
+                    name="visibility" 
+                    checked={isPublic === true} 
+                    onChange={() => setIsPublic(true)} 
+                    className="text-brand-blue bg-white dark:bg-brand-darkBg border-gray-300 dark:border-brand-darkBorder focus:ring-brand-blue w-4 h-4 cursor-pointer" 
+                  />
+                  <span className="text-gray-900 dark:text-gray-200 text-sm">Public</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="visibility" checked={isPublic === false} onChange={() => setIsPublic(false)} className="text-brand-indigo focus:ring-brand-indigo w-4 h-4" />
-                  <span className="text-brand-dark text-sm">Private</span>
+                  <input 
+                    type="radio" 
+                    name="visibility" 
+                    checked={isPublic === false} 
+                    onChange={() => setIsPublic(false)} 
+                    className="text-brand-blue bg-white dark:bg-brand-darkBg border-gray-300 dark:border-brand-darkBorder focus:ring-brand-blue w-4 h-4 cursor-pointer" 
+                  />
+                  <span className="text-gray-900 dark:text-gray-200 text-sm">Private</span>
                 </label>
               </div>
             </div>
 
             <div className="col-span-1 md:col-span-2">
-              <label className="block text-sm font-medium text-brand-dark mb-1">Description *</label>
-              <textarea required rows={4} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full px-4 py-2 border border-brand-gray rounded-lg focus:ring-2 focus:ring-brand-indigo outline-none resize-none" />
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-200 mb-1">Description *</label>
+              <textarea 
+                required 
+                rows={4} 
+                value={description} 
+                onChange={(e) => setDescription(e.target.value)} 
+                className={`${inputStyles} resize-none`} 
+              />
             </div>
           </div>
 
           <div className="pt-4 flex justify-end">
-            <button type="button" onClick={() => navigate('/')} className="mr-4 px-6 py-2 text-brand-dark hover:bg-gray-100 rounded-lg transition-colors">Cancel</button>
-            <button type="submit" disabled={loading} className="bg-brand-indigo hover:bg-[#520dc2] text-white px-8 py-2 rounded-lg font-medium transition-colors disabled:opacity-70">
+            <button 
+              type="button" 
+              onClick={() => navigate('/')} 
+              className="mr-4 px-6 py-2 text-gray-600 dark:text-brand-darkText hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-brand-darkBg rounded-lg transition-colors font-medium"
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              disabled={loading} 
+              className="bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-2 rounded-lg font-medium transition-colors shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
+            >
               {loading ? 'Creating...' : 'Create Event'}
             </button>
           </div>

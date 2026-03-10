@@ -32,7 +32,7 @@ export default function Login() {
         navigate('/');
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Щось пішло не так. Перевірте дані.');
+      setError(err.response?.data?.message || 'Something went wrong. Please check your details.');
     } finally {
       setLoading(false);
     }
@@ -40,13 +40,13 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-brand-white p-4">
-      <div className="bg-white rounded-2xl shadow-sm p-8 w-full max-w-md border border-brand-gray/50">
-        <h2 className="text-3xl font-bold text-center text-brand-indigo mb-8">
-          {isLogin ? 'З поверненням!' : 'Створити акаунт'}
+      <div className="bg-white rounded-2xl shadow-sm p-8 w-full max-w-md border border-gray-200">
+        <h2 className="text-3xl font-bold text-center text-brand-blue mb-8">
+          {isLogin ? 'Welcome Back!' : 'Create an Account'}
         </h2>
 
         {error && (
-          <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-6 text-sm text-center">
+          <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-6 text-sm text-center border border-red-100">
             {error}
           </div>
         )}
@@ -54,46 +54,46 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="space-y-5">
           {!isLogin && (
             <div>
-              <label className="block text-sm font-medium text-brand-dark mb-1">Ім'я</label>
+              <label className="block text-sm font-medium text-gray-900 mb-1">Name</label>
               <div className="relative">
-                <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-gray" />
+                <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-brand-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all"
-                  placeholder="Ваше ім'я"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue transition-all"
+                  placeholder="Your Name"
                 />
               </div>
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-brand-dark mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-900 mb-1">Email</label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-gray" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-brand-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue transition-all"
                 placeholder="email@example.com"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-brand-dark mb-1">Пароль</label>
+            <label className="block text-sm font-medium text-gray-900 mb-1">Password</label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-gray" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-brand-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue transition-all"
                 placeholder="••••••••"
               />
             </div>
@@ -102,9 +102,9 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-brand-indigo hover:bg-[#520dc2] text-white font-semibold py-3 rounded-lg transition-all flex justify-center items-center mt-4"
+            className="w-full bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold py-3 rounded-lg transition-colors flex justify-center items-center mt-4 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? 'Увійти' : 'Зареєструватися')}
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? 'Sign In' : 'Sign Up')}
           </button>
         </form>
 
@@ -115,9 +115,9 @@ export default function Login() {
               setIsLogin(!isLogin);
               setError('');
             }}
-            className="text-sm text-brand-blue hover:underline"
+            className="text-sm text-brand-blue hover:underline font-medium transition-all"
           >
-            {isLogin ? 'Ще немає акаунту? Створити' : 'Вже є акаунт? Увійти'}
+            {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
           </button>
         </div>
       </div>
