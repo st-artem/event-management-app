@@ -2,26 +2,11 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
+import { type Event } from '../types';
 import Navbar from '../components/Navbar';
 import { Calendar, Clock, MapPin, Users, Trash2, Edit, ArrowLeft, Save, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-interface Event {
-  id: number;
-  title: string;
-  description: string;
-  dateTime: string;
-  location: string;
-  capacity: number | null;
-  organizer: User;
-  participants: User[];
-}
 
 export default function EventDetails() {
   const { id } = useParams<{ id: string }>();

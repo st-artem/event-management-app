@@ -2,20 +2,12 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
+import { type Event } from '../types';
 import Navbar from '../components/Navbar';
 import { Calendar, Clock, MapPin, Users, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-interface Event {
-  id: number;
-  title: string;
-  description: string;
-  dateTime: string;
-  location: string;
-  capacity: number | null;
-  participants: any[];
-  organizer: { id: number };
-}
+
 
 export default function Events() {
   const [events, setEvents] = useState<Event[]>([]);

@@ -1,15 +1,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
+import { type Event } from '../types';
 import Navbar from '../components/Navbar';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 
-interface Event {
-  id: number;
-  title: string;
-  dateTime: string;
-}
 
 export default function MyEvents() {
   const [events, setEvents] = useState<Event[]>([]);
