@@ -23,22 +23,22 @@ This project allows users to discover public events, manage their own events (cr
 The project is fully containerized. You can launch the Frontend, Backend, and Database with a single command.
 
 ### 1. Clone the repository
-\`\`\`bash
+```bash
 git clone https://github.com/st-artem/event-management-app.git
 cd event-management-app
-\`\`\`
+```
 
 ### 2. Environment Variables
 The repository includes `.env.example` files. For a quick Docker launch, the default configurations in `docker-compose.yml` are ready to go. 
 If you want to set them explicitly, copy the examples:
-* \`cp backend/.env.example backend/.env\`
-* \`cp frontend/.env.example frontend/.env\`
+* `cp backend/.env.example backend/.env`
+* `cp frontend/.env.example frontend/.env`
 
 ### 3. Launch the Application
 Run the following command from the root directory:
-\`\`\`bash
+```bash
 docker-compose up --build
-\`\`\`
+```
 
 ### 4. Access the App
 * **Frontend (Web App):** http://localhost:5173
@@ -51,8 +51,8 @@ docker-compose up --build
 On the first launch, the application automatically populates the PostgreSQL database with sample data (2 Users, 3 Public Events).
 
 You can log in immediately using these test accounts:
-1.  **Email:** \`eduard@example.com\` | **Password:** \`password123\` *(Organizer of 2 events)*
-2.  **Email:** \`test@example.com\` | **Password:** \`password123\` *(Organizer of 1 event, participant in 1)*
+1.  **Email:** `eduard@example.com` | **Password:** `password123` *(Organizer of 2 events)*
+2.  **Email:** `test@example.com` | **Password:** `password123` *(Organizer of 1 event, participant in 1)*
 
 ---
 Developed by st-artem.
