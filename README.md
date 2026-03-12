@@ -31,7 +31,9 @@ cd event-management-app
 ### 2. Environment Variables
 The repository includes `.env.example` file. For a quick Docker launch, the default configurations in `docker-compose.yml` are ready to go. 
 If you want to set them explicitly, copy the example:
-* `cp .env.example .env`
+```bash
+cp .env.example .env`
+```
 
 ### 3. Launch the Application
 Run the following command from the root directory:
