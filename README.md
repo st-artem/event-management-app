@@ -43,7 +43,6 @@ docker compose up --build -d && docker compose logs -f backend frontend
 
 ### 4. Access the App
 * **Frontend (Web App):** http://localhost:5173
-* **Backend API Base:** http://localhost:3000
 * **Swagger API Docs:** http://localhost:3000/api
 
 ---
