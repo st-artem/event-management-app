@@ -3,14 +3,21 @@ services:
     image: postgres:15-alpine
     container_name: ems-postgres
     restart: always
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: rootpassword
-      POSTGRES_DB: ems_db
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: ./backend
@@ -18,25 +25,25 @@ services:
     restart: always
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     environment:
       - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=root
-      - DB_PASSWORD=rootpassword
-      - DB_NAME=ems_db
-      - JWT_SECRET=super_secret_jwt_key_for_events_app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   frontend:
-    build: 
+    build:
       context: ./frontend
       args:
-        - VITE_API_URL=http://localhost:3000
+        - VITE_API_URL=${VITE_API_URL}
     container_name: ems-frontend
     restart: always
     ports:
       - "5173:5173"
+    env_file:
+      - .env
     depends_on:
       - backend
 
