@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { useAuthStore } from '../store/authStore';
 import { type Event } from '../types';
 import Navbar from '../components/Navbar';
+import Loader from '../components/Loader';
 import { Calendar, Clock, MapPin, Users, Trash2, Edit, ArrowLeft, Save, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -23,7 +24,7 @@ export default function EventDetails() {
 
   const fetchEvent = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/events/${id}`, {
+      const res = await api.get(`${import.meta.env.VITE_API_URL}/events/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setEvent(res.data);
@@ -45,7 +46,7 @@ export default function EventDetails() {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/events/${id}`, {
+      await api.delete(`${import.meta.env.VITE_API_URL}/events/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Event successfully deleted!');
@@ -60,7 +61,7 @@ export default function EventDetails() {
 
   const handleUpdate = async () => {
     try {
-      await axios.patch(`${import.meta.env.VITE_API_URL}/events/${id}`, editData, {
+      await api.patch(`${import.meta.env.VITE_API_URL}/events/${id}`, editData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setIsEditing(false);
@@ -73,7 +74,7 @@ export default function EventDetails() {
 
   const handleLeave = async () => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/events/${id}/leave`, {}, {
+      await api.post(`${import.meta.env.VITE_API_URL}/events/${id}/leave`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchEvent();
@@ -85,7 +86,7 @@ export default function EventDetails() {
 
   const handleJoin = async () => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/events/${id}/join`, {}, {
+      await api.post(`${import.meta.env.VITE_API_URL}/events/${id}/join`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchEvent();
@@ -95,7 +96,7 @@ export default function EventDetails() {
     }
   };
 
-  if (loading) return <div className="min-h-screen bg-brand-white dark:bg-brand-darkBg flex justify-center items-center text-gray-500 dark:text-brand-darkText">Loading...</div>;
+  if (loading) return <Loader text="Loading event details..." />;
   if (!event) return <div className="min-h-screen bg-brand-white dark:bg-brand-darkBg flex justify-center items-center text-gray-500 dark:text-brand-darkText">Event not found</div>;
 
   const isOrganizer = currentUserId === event.organizer.id;

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { useAuthStore } from '../store/authStore';
 import Navbar from '../components/Navbar';
+import Loader from '../components/Loader';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { type Event } from '../types';
@@ -18,7 +19,7 @@ export default function MyEvents() {
   useEffect(() => {
     const fetchMyEvents = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/me/events`, {
+        const res = await api.get(`${import.meta.env.VITE_API_URL}/users/me/events`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -39,7 +40,7 @@ export default function MyEvents() {
         console.warn('Endpoint /users/me/events is not responding, using fallback...');
         
         try {
-          const fallbackRes = await axios.get(`${import.meta.env.VITE_API_URL}/events`, {
+          const fallbackRes = await api.get(`${import.meta.env.VITE_API_URL}/events`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           const currentUserId = token ? JSON.parse(atob(token.split('.')[1])).sub : null;
@@ -96,7 +97,7 @@ export default function MyEvents() {
 
   const displayDays = view === 'month' ? monthDays : weekDaysArr;
 
-  if (loading) return <div className="min-h-screen bg-brand-white dark:bg-brand-darkBg flex justify-center items-center text-gray-500 dark:text-brand-darkText">Loading calendar...</div>;
+  if (loading) return <Loader text="Loading event details..." />;
 
   return (
     <div className="min-h-screen bg-brand-white dark:bg-brand-darkBg transition-colors">

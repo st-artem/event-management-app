@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { useAuthStore } from '../store/authStore';
 import { Mail, Lock, User as UserIcon, Loader2 } from 'lucide-react';
 
@@ -22,12 +22,12 @@ export default function Login() {
 
     try {
       if (isLogin) {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
+        const res = await api.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
         login(res.data.access_token);
         navigate('/'); 
       } else {
-        await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, { email, password, name });
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
+        await api.post(`${import.meta.env.VITE_API_URL}/auth/register`, { email, password, name });
+        const res = await api.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
         login(res.data.access_token);
         navigate('/');
       }

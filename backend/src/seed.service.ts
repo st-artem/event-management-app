@@ -23,8 +23,8 @@ export class SeedService implements OnApplicationBootstrap {
       const hashedPassword = await argon2.hash('password123');
 
       const users = await this.userRepository.save([
-        { email: 'eduard@example.com', password: hashedPassword, name: 'Eduard' },
-        { email: 'test@example.com', password: hashedPassword, name: 'Test User' }
+        { email: 'eduard@example.com', passwordHash: hashedPassword, name: 'Eduard' },
+        { email: 'test@example.com', passwordHash: hashedPassword, name: 'Test User' }
       ] as any);
 
       const user1 = users[0];

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { useAuthStore } from '../store/authStore';
 import Navbar from '../components/Navbar';
 
@@ -28,7 +28,7 @@ export default function CreateEvent() {
     try {
       const formattedDate = new Date(dateTime).toISOString();
 
-      const res = await axios.post(
+      const res = await api.post(
         `${import.meta.env.VITE_API_URL}/events`,
         {
           title,
