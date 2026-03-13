@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
 import { Toaster } from 'react-hot-toast';
 import Footer from './components/Footer';
@@ -14,23 +14,40 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
+const MainLayout = () => {
+  return (
+    <>
+      <main className="flex-grow flex flex-col">
+        <Outlet />
+      </main>
+      <Footer />
+    </>
+  );
+};
+
 function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-[#0B1120] font-sans transition-colors">
         <Toaster position="bottom-right" toastOptions={{ duration: 3000 }} /> 
         
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            
+        <Routes>
+          <Route 
+            path="/login" 
+            element={
+              <main className="flex-grow">
+                <Login />
+              </main>
+            } 
+          />
+          
+          <Route element={<MainLayout />}>
             <Route path="/" element={<ProtectedRoute><Events /></ProtectedRoute>} />
             <Route path="/my-events" element={<ProtectedRoute><MyEvents /></ProtectedRoute>} />
             <Route path="/create-event" element={<ProtectedRoute><CreateEvent /></ProtectedRoute>} />
             <Route path="/events/:id" element={<ProtectedRoute><EventDetails /></ProtectedRoute>} />
-          </Routes>
-        </main>
-        <Footer />
+          </Route>
+        </Routes>
       </div>
     </BrowserRouter>
   );

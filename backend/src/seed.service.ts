@@ -30,36 +30,37 @@ export class SeedService implements OnApplicationBootstrap {
       const user1 = users[0];
       const user2 = users[1];
 
-      await this.eventRepository.save([
-        {
-          title: 'Tech Conference 2026', 
-          description: 'Annual technology conference featuring the latest innovations in AI.', 
-          dateTime: new Date(Date.now() + 86400000 * 10).toISOString(), 
-          location: 'Convention Center, San Francisco', 
-          capacity: 500, 
-          isPublic: true, 
-          organizer: user1
-        },
-        {
-          title: 'Community Networking Meetup', 
-          description: 'Connect with local professionals and expand your network.', 
-          dateTime: new Date(Date.now() + 86400000 * 15).toISOString(), 
-          location: 'Downtown Coffee Shop', 
-          capacity: 30, 
-          isPublic: true, 
-          organizer: user1
-        },
-        {
-          title: 'Design Workshop', 
-          description: 'Hands-on workshop covering modern UI/UX design principles.', 
-          dateTime: new Date(Date.now() + 86400000 * 20).toISOString(), 
-          location: 'Creative Space Studio', 
-          capacity: 20, 
-          isPublic: true, 
-          organizer: user2, 
-          participants: [user1]
-        }
-      ] as any);
+
+    await this.eventRepository.save([
+    {
+        title: 'IT Vinnytsia Meetup #12',
+        description: 'Щомісячна зустріч IT-спільноти Вінниці. Доповіді про React 19, NestJS та кар\'єрні поради від Senior розробників.',
+        dateTime: new Date(Date.now() + 86400000 * 7).toISOString(),
+        location: 'VTEM, вул. Соборна 16, Вінниця',
+        capacity: 80,
+        isPublic: true,
+        organizer: user1
+    },
+    {
+        title: 'Вінниця Half Marathon 2026',
+        description: 'Щорічний півмарафон вздовж набережної Південного Бугу. Дистанції 5км, 10км та 21км. Реєстрація обов\'язкова.',
+        dateTime: new Date(Date.now() + 86400000 * 14).toISOString(),
+        location: 'Центральний парк, набережна, Вінниця',
+        capacity: 500,
+        isPublic: true,
+        organizer: user1
+    },
+    {
+        title: 'UI/UX Design Workshop',
+        description: 'Практичний воркшоп з Figma: від wireframe до готового прототипу. Розберемо реальні кейси вінницьких стартапів.',
+        dateTime: new Date(Date.now() + 86400000 * 21).toISOString(),
+        location: 'Coworking Hub, вул. Київська 5, Вінниця',
+        capacity: 25,
+        isPublic: true,
+        organizer: user2,
+        participants: [user1]
+    }
+    ] as any);
 
       this.logger.log('Скрипт успішно виконався');
       this.logger.log('Дефолтні користувачі:');
