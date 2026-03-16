@@ -38,7 +38,7 @@ cp .env.example .env`
 ### 3. Launch the Application
 Run the following command from the root directory:
 ```bash
-docker compose up --build  && docker compose logs -f backend frontend
+docker compose up --build 
 ```
 
 ### 4. Access the App
