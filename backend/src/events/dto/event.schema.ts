@@ -7,4 +7,5 @@ export const createEventSchema = yup.object({
   location: yup.string().required('Location is required'),
   capacity: yup.number().nullable().min(1, 'Capacity must be at least 1'),
   isPublic: yup.boolean().default(true),
+  tags: yup.array().of(yup.string().required()).max(5, 'Maximum 5 tags allowed').optional(),
 });

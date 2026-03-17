@@ -6,16 +6,13 @@ export class Tag {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  // Унікальний індекс на рівні бази даних
   @Index({ unique: true })
   @Column()
   name: string;
 
-  // Зворотний бік зв'язку з подіями
   @ManyToMany(() => Event, (event) => event.tags)
   events: Event[];
 
-  // Хуки для нормалізації (щоб у базі завжди був нижній регістр)
   @BeforeInsert()
   @BeforeUpdate()
   toLowerCase() {

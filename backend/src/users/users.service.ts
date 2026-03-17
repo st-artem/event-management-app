@@ -22,7 +22,12 @@ export class UsersService {
   async getMyEvents(userId: number) {
     return this.usersRepository.findOne({
       where: { id: userId },
-      relations: ['organizedEvents', 'attendedEvents'],
+      relations: [
+        'organizedEvents', 
+        'organizedEvents.tags', 
+        'attendedEvents', 
+        'attendedEvents.tags'  
+      ],
     });
   }
 }

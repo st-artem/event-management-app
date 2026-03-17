@@ -13,6 +13,7 @@ export interface Event {
   capacity: number | null;
   organizer: User;
   participants: User[];
+  tags?: Tag[];
 }
 
 export interface EventCardProps {
@@ -33,4 +34,27 @@ export interface EmptyStateProps {
   title: string;
   description?: string;
   action?: any;
+}
+
+export interface Tag {
+  id: string;
+  name: string;
+}
+
+export interface TagChipProps {
+  name: string;
+  className?: string; 
+}
+
+export interface TagOption {
+  label: string;
+  value: string;
+}
+
+export interface TagSelectProps {
+  value: TagOption[];
+  onChange: (newValue: TagOption[]) => void;
+  options?: TagOption[];
+  maxTags?: number;
+  placeholder?: string;
 }

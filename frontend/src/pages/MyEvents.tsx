@@ -7,6 +7,27 @@ import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-reac
 import { useNavigate, Link } from 'react-router-dom';
 import { type Event } from '../types';
 
+
+const getCalendarEventColorClasses = (tagName?: string) => {
+  const defaultClasses = "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/50 hover:bg-blue-100 dark:hover:bg-blue-900/50";
+  
+  if (!tagName) return defaultClasses;
+
+  const colorVariants = [
+    "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/50",
+    "bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/50 hover:bg-amber-100 dark:hover:bg-amber-900/50",
+    "bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-800/50 hover:bg-violet-100 dark:hover:bg-violet-900/50",
+    "bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800/50 hover:bg-rose-100 dark:hover:bg-rose-900/50",
+  ];
+  
+  let hash = 0;
+  for (let i = 0; i < tagName.length; i++) {
+    hash = tagName.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  return colorVariants[Math.abs(hash) % colorVariants.length];
+};
+
 export default function MyEvents() {
   const [events, setEvents] = useState<Event[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -104,7 +125,6 @@ export default function MyEvents() {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 pb-12">
-        
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">My Events</h1>
@@ -151,7 +171,6 @@ export default function MyEvents() {
         </div>
 
         <div className="bg-white dark:bg-brand-darkCard rounded-2xl border border-gray-200 dark:border-brand-darkBorder shadow-sm overflow-hidden transition-colors">
-          
           <div className="grid grid-cols-7 border-b border-gray-200 dark:border-brand-darkBorder bg-gray-50/80 dark:bg-brand-darkBg/30">
             {weekDaysLabels.map((day, index) => (
               <div key={day} className={`py-2 md:py-4 text-center text-xs md:text-sm font-semibold text-gray-500 dark:text-brand-darkText ${index !== 6 ? 'border-r border-gray-200 dark:border-brand-darkBorder' : ''}`}>
@@ -175,27 +194,29 @@ export default function MyEvents() {
 
               return (
                 <div key={day.toISOString()} className={`border-b border-gray-200 dark:border-brand-darkBorder p-1 md:p-2.5 flex flex-col transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-800/30 ${!isLastColumn ? 'border-r dark:border-r-brand-darkBorder' : ''} ${isToday ? 'bg-blue-50/30 dark:bg-transparent' : ''}`}>
-                  
                   <div className={`text-[10px] md:text-sm font-medium w-5 h-5 md:w-8 md:h-8 mx-auto md:mx-0 flex items-center justify-center rounded-full mb-1 md:mb-2 ${isToday ? 'bg-brand-blue text-white shadow-md' : 'text-gray-900 dark:text-gray-300'}`}>
                     {day.getDate()}
                   </div>
                   
                   <div className="flex-1 space-y-1 md:space-y-1.5 overflow-y-auto pr-0.5 md:pr-1" style={{ scrollbarWidth: 'none' }}>
-                    {dayEvents.map(event => (
-                      <div 
-                        key={event.id} 
-                        onClick={() => navigate(`/events/${event.id}`)} 
-                        className="flex flex-col text-[8px] md:text-xs bg-brand-blue/10 dark:bg-brand-blue/20 text-brand-blue dark:text-blue-400 font-semibold rounded p-0.5 md:p-1.5 border border-brand-blue/20 dark:border-transparent cursor-pointer hover:bg-brand-blue/20 dark:hover:bg-brand-blue/30 transition-colors overflow-hidden"
-                        title={event.title}
-                      >
-                        <span className="hidden md:block opacity-80 leading-tight">
-                          {new Date(event.dateTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
-                        </span>
-                        <span className="truncate leading-tight text-center md:text-left">
-                          {event.title}
-                        </span>
-                      </div>
-                    ))}
+                    {dayEvents.map(event => {
+                      const colorClasses = getCalendarEventColorClasses(event.tags?.[0]?.name);
+                      return (
+                        <div 
+                          key={event.id} 
+                          onClick={() => navigate(`/events/${event.id}`)} 
+                          className={`flex flex-col text-[8px] md:text-xs font-semibold rounded p-0.5 md:p-1.5 border cursor-pointer transition-colors overflow-hidden ${colorClasses}`}
+                          title={event.title}
+                        >
+                          <span className="hidden md:block opacity-80 leading-tight">
+                            {new Date(event.dateTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                          </span>
+                          <span className="truncate leading-tight text-center md:text-left">
+                            {event.title}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
