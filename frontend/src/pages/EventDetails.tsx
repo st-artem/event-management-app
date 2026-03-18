@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuthStore } from '../store/authStore';
 import { type Event, type TagOption } from '../types';
-import Navbar from '../components/Navbar';
 import Loader from '../components/Loader';
 import { Calendar, Clock, MapPin, Users, Trash2, Edit, ArrowLeft, Save, X } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -141,8 +140,6 @@ export default function EventDetails() {
 
   return (
     <div className="min-h-screen bg-brand-white dark:bg-brand-darkBg transition-colors">
-      <Navbar />
-
       <main className="max-w-4xl mx-auto px-8 pb-12">
         <button onClick={() => navigate(-1)} className="flex items-center text-brand-blue hover:text-brand-blue/80 hover:underline mb-6 transition-all">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to events

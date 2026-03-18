@@ -3,7 +3,6 @@ import api from '../api/axios';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { type Event, type TagOption } from '../types'; 
-import Navbar from '../components/Navbar';
 import EventCard from '../components/EventCard';
 import EmptyState from '../components/EmptyState';
 import { Search, CalendarX2 } from 'lucide-react';
@@ -99,8 +98,6 @@ export default function Events() {
 
   return (
     <div className="min-h-screen bg-brand-white dark:bg-brand-darkBg transition-colors">
-      <Navbar />
-
       <main className="max-w-7xl mx-auto px-4 md:px-8 pb-12">
         <div className="mb-10">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">Discover Events</h1>

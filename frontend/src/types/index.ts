@@ -58,3 +58,8 @@ export interface TagSelectProps {
   maxTags?: number;
   placeholder?: string;
 }
+
+export type Message = {
+  role: 'user' | 'assistant';
+  content: string;
+};

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuthStore } from '../store/authStore';
-import Navbar from '../components/Navbar';
 import Loader from '../components/Loader';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -122,8 +121,6 @@ export default function MyEvents() {
 
   return (
     <div className="min-h-screen bg-brand-white dark:bg-brand-darkBg transition-colors">
-      <Navbar />
-
       <main className="max-w-7xl mx-auto px-4 md:px-8 pb-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
           <div>

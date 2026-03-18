@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuthStore } from '../store/authStore';
-import Navbar from '../components/Navbar';
 import { TagSelect } from '../components/TagSelect'; 
 import { type TagOption } from '../types';
 
@@ -79,8 +78,6 @@ export default function CreateEvent() {
 
   return (
     <div className="min-h-screen bg-brand-white dark:bg-brand-darkBg transition-colors">
-      <Navbar />
-
       <main className="max-w-3xl mx-auto px-8 pb-12">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">Create New Event</h1>
