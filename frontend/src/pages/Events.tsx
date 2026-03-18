@@ -1,96 +1,36 @@
 import { useEffect, useState } from 'react';
-import api from '../api/axios';
 import { useAuthStore } from '../store/authStore';
+import { useEventStore } from '../store/eventStore'; 
 import { useNavigate } from 'react-router-dom';
-import { type Event, type TagOption } from '../types'; 
 import EventCard from '../components/EventCard';
 import EmptyState from '../components/EmptyState';
 import { Search, CalendarX2 } from 'lucide-react';
-import toast from 'react-hot-toast';
 import { TagSelect } from '../components/TagSelect'; 
 
-
 export default function Events() {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [search, setSearch] = useState('');
-  const [selectedTags, setSelectedTags] = useState<TagOption[]>([]);
-  const [availableTags, setAvailableTags] = useState<TagOption[]>([]);
-  
+  const [search, setSearch] = useState(''); 
   const token = useAuthStore((state) => state.token);
   const navigate = useNavigate();
-
   const currentUserId = token ? JSON.parse(atob(token.split('.')[1])).sub : null;
 
+  const { 
+    events, 
+    availableTags, 
+    selectedTags, 
+    setSelectedTags, 
+    fetchGlobalTags, 
+    fetchEvents, 
+    joinEvent, 
+    leaveEvent 
+  } = useEventStore();
+
+  
   useEffect(() => {
-  const fetchGlobalTags = async () => {
-    try {
-      const res = await api.get(`${import.meta.env.VITE_API_URL}/tags`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      if (Array.isArray(res.data) && res.data.length > 0) {
-        setAvailableTags(res.data.map((t: any) => ({ label: t.name, value: t.name })));
-      } else {
-        const defaultTags = [
-          { label: 'Tech', value: 'Tech' },
-          { label: 'Music', value: 'Music' },
-          { label: 'Art', value: 'Art' },
-          { label: 'Business', value: 'Business' }
-        ];
-        setAvailableTags(defaultTags);
-      }
-    } catch (error) {
-      console.error('Error fetching global tags:', error);
+    if (token) {
+      fetchGlobalTags();
+      fetchEvents();
     }
-  };
-  if (token) fetchGlobalTags();
-}, [token]);
-
-  const fetchEvents = async () => {
-    try {
-      let url = `${import.meta.env.VITE_API_URL}/events`;
-      
-      if (selectedTags.length > 0) {
-        const tagNames = selectedTags.map(t => t.value).join(',');
-        url += `?tags=${tagNames}`;
-      }
-
-      const res = await api.get(url, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setEvents(res.data);
-    } catch (error) {
-      console.error('Error fetching events:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchEvents();
-  }, [token, selectedTags]);
-
-  const handleJoin = async (eventId: number) => {
-    try {
-      await api.post(`${import.meta.env.VITE_API_URL}/events/${eventId}/join`, {}, { 
-        headers: { Authorization: `Bearer ${token}` } 
-      });
-      fetchEvents(); 
-      toast.success('Successfully joined the event!');
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Error joining event');
-    }
-  };
-
-  const handleLeave = async (eventId: number) => {
-    try {
-      await api.post(`${import.meta.env.VITE_API_URL}/events/${eventId}/leave`, {}, { 
-        headers: { Authorization: `Bearer ${token}` } 
-      });
-      fetchEvents(); 
-      toast.success('Successfully left the event!');
-    } catch (error: any) {
-      toast.error('Error leaving event');
-    }
-  };
+  }, [token]); 
 
   const filteredEvents = events.filter(event => 
     event.title.toLowerCase().includes(search.toLowerCase())
@@ -132,8 +72,8 @@ export default function Events() {
               key={event.id}
               event={event}
               currentUserId={currentUserId}
-              onJoin={handleJoin}
-              onLeave={handleLeave}
+              onJoin={joinEvent} 
+              onLeave={leaveEvent} 
               onClick={() => navigate(`/events/${event.id}`)}
             />
           ))}

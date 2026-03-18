@@ -13,5 +13,6 @@ import { Tag } from '../tags/entities/tag.entity';
   ],
   controllers: [EventsController],
   providers: [EventsService],
+  exports: [EventsService],
 })
 export class EventsModule {}
