@@ -5,7 +5,7 @@ import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('AI Assistant') 
 @ApiBearerAuth() 
-@Controller('ai')
+@Controller('api/ai')
 export class AiController {
   constructor(private readonly aiService: AiService) {}
 
@@ -15,16 +15,25 @@ export class AiController {
     schema: { 
       type: 'object', 
       properties: { 
-        query: { type: 'string', example: 'Які в мене плани на сьогодні?' } 
+        messages: { 
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              role: { type: 'string', example: 'user' },
+              content: { type: 'string', example: 'Які в мене плани на сьогодні?' }
+            }
+          }
+        } 
       } 
     } 
   }) 
-  async askAssistant(@Request() req, @Body('query') query: string) {
-    if (!query) {
-      throw new BadRequestException('Питання не може бути порожнім');
+  async askAssistant(@Request() req, @Body('messages') messages: any[]) {
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      throw new BadRequestException('Історія повідомлень не може бути порожньою');
     }
 
     const userId = req.user.sub || req.user.id; 
-    return this.aiService.askAssistant(userId, query);
+    return this.aiService.askAssistant(userId, messages);
   }
 }

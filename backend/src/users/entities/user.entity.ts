@@ -13,7 +13,22 @@ export class User {
   email: string;
 
   @Column()
-  passwordHash: string; 
+  passwordHash: string;
+
+  @Column({ nullable: true })
+  bio: string;
+
+  @Column({ nullable: true })
+  location: string;
+
+  @Column({ nullable: true })
+  github: string;
+
+  @Column({ nullable: true })
+  website: string;
+
+  @Column({ nullable: true })
+  telegram: string;
 
   @OneToMany(() => Event, (event) => event.organizer)
   organizedEvents: Event[];
