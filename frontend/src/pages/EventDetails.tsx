@@ -8,6 +8,7 @@ import { Calendar, Clock, MapPin, Users, Trash2, Edit, ArrowLeft, Save, X } from
 import toast from 'react-hot-toast';
 import { TagChip } from '../components/TagChip';
 import { TagSelect } from '../components/TagSelect';
+import { UserAvatar } from '../components/UserAvatar';
 
 
 export default function EventDetails() {
@@ -246,9 +247,8 @@ export default function EventDetails() {
                     onClick={() => navigate(`/profile/${user.id}`)}
                     className="flex items-center gap-3 bg-white dark:bg-brand-darkCard p-3 rounded-lg border border-gray-200 dark:border-brand-darkBorder shadow-sm transition-all cursor-pointer hover:border-brand-blue/40 hover:shadow-md hover:-translate-y-0.5"
                   >
-                    <div className="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue font-bold shrink-0">
-                      {user.email.charAt(0).toUpperCase()}
-                    </div>
+                    <UserAvatar name={user.email || user.name || 'user'} size={40} />
+                    
                     <div className="truncate flex-1">
                       <p className="font-medium text-gray-900 dark:text-white text-sm truncate">{user.name || 'User'}</p>
                       <p className="text-xs text-gray-500 dark:text-brand-darkText truncate">{user.email}</p>

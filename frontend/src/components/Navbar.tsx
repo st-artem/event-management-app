@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/authStore';
 import { LogOut, Plus, Calendar as CalendarIcon, List, Sun, Moon, Menu, X } from 'lucide-react';
 import { UserAvatar } from './UserAvatar'; 
 
+
 export default function Navbar() {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
@@ -43,9 +44,14 @@ export default function Navbar() {
     <nav className="bg-brand-white dark:bg-brand-darkCard border-b border-brand-gray dark:border-brand-darkBorder shadow-sm transition-colors z-50 relative">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex justify-between items-center py-4">
-          
-          <Link to="/" className="text-xl font-bold text-gray-900 dark:text-white transition-colors hover:opacity-80">
-            Event<span className="text-brand-blue">Hub</span>
+
+          <Link to="/" className="flex items-center gap-3 text-2xl font-bold text-gray-900 dark:text-white transition-colors hover:opacity-80">          
+            <img 
+              src="/event-logo.png" 
+              alt="EventHub Logo" 
+              className="w-16 h-16 object-contain shrink-0" 
+            />
+            <span className="mt-0.5">Event<span className="text-brand-blue">Hub</span></span>
           </Link>
 
           <div className="hidden md:flex items-center gap-2">
@@ -88,7 +94,7 @@ export default function Navbar() {
                   className="hover:opacity-80 transition-opacity mr-3"
                   title="My Profile"
                 >
-                  <UserAvatar name={user.name || user.email || 'user'} size={36} />
+                  <UserAvatar name={user.email || user.name || 'user'} size={36} />
                 </Link>
                 
                 <button 
@@ -150,7 +156,7 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-3 text-base font-medium px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-brand-darkBg text-gray-900 dark:text-white border-t border-gray-100 dark:border-brand-darkBorder mt-2 pt-4"
               >
-                <UserAvatar name={user.name || user.email || 'user'} size={28} />
+                <UserAvatar name={user.email || user.name || 'user'} size={28} />
                 My Profile
               </Link>
             )}

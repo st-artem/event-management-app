@@ -104,8 +104,8 @@ export default function Profile() {
         <div className="bg-white dark:bg-brand-darkCard rounded-2xl shadow-sm border border-gray-100 dark:border-brand-darkBorder overflow-hidden">
           <div className="h-36 bg-gradient-to-r from-brand-blue via-indigo-500 to-brand-orange" />
           <div className="px-6 md:px-10 pb-8 flex flex-col md:flex-row items-center md:items-end gap-5 -mt-14 relative z-10">
-            <div className="shrink-0 ring-4 ring-white dark:ring-brand-darkCard rounded-2xl shadow-lg">
-              <UserAvatar name={profileUser.email} size={108} />
+            <div className="shrink-0 ring-4 ring-white dark:ring-brand-darkCard rounded-full shadow-lg">
+                <UserAvatar name={profileUser.email} size={108} />
             </div>
             <div className="flex-1 text-center md:text-left">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">

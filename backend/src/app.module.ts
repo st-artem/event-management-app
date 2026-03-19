@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { SeedService } from './seed.service';
 import { User } from './users/entities/user.entity';
 import { Event } from './events/entities/event.entity';
+import { Tag } from './tags/entities/tag.entity';
 import { TagsModule } from './tags/tags.module';
 import { AiModule } from './ai/ai.module';
 
@@ -28,7 +29,7 @@ import { AiModule } from './ai/ai.module';
       autoLoadEntities: true, 
       synchronize: true, 
     }),
-    TypeOrmModule.forFeature([User, Event]), 
+    TypeOrmModule.forFeature([User, Event, Tag]), 
     UsersModule,
     EventsModule,
     AuthModule,
