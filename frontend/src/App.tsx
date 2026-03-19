@@ -8,6 +8,7 @@ import Events from './pages/Events';
 import MyEvents from './pages/MyEvents';
 import CreateEvent from './pages/CreateEvent';
 import EventDetails from './pages/EventDetails';
+import Profile from './pages/Profile';
 
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/my-events" element={<ProtectedRoute><MyEvents /></ProtectedRoute>} />
             <Route path="/create-event" element={<ProtectedRoute><CreateEvent /></ProtectedRoute>} />
             <Route path="/events/:id" element={<ProtectedRoute><EventDetails /></ProtectedRoute>} />
+            <Route path="/profile/:id" element={<Profile />} />
           </Route>
         </Routes>
       </div>

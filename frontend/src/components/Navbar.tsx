@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { LogOut, Plus, Calendar as CalendarIcon, List, Sun, Moon, Menu, X } from 'lucide-react';
+import { UserAvatar } from './UserAvatar'; 
 
 export default function Navbar() {
+  const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
+  
   const navigate = useNavigate();
   const [themeOpen, setThemeOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false); 
@@ -78,9 +81,25 @@ export default function Navbar() {
               )}
             </div>
             
-            <button onClick={handleLogout} className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-brand-darkText hover:text-brand-orange dark:hover:text-brand-orange ml-2 pl-4 border-l border-brand-gray dark:border-brand-darkBorder transition-colors">
-              <LogOut size={18} /> 
-            </button>
+            {user && (
+              <div className="flex items-center ml-2 pl-4 border-l border-brand-gray dark:border-brand-darkBorder">
+                <Link 
+                  to={`/profile/${user.id}`} 
+                  className="hover:opacity-80 transition-opacity mr-3"
+                  title="My Profile"
+                >
+                  <UserAvatar name={user.name || user.email || 'user'} size={36} />
+                </Link>
+                
+                <button 
+                  onClick={handleLogout} 
+                  className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-brand-darkText hover:text-brand-orange dark:hover:text-brand-orange transition-colors"
+                  title="Logout"
+                >
+                  <LogOut size={18} /> 
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="md:hidden flex items-center gap-4">
@@ -124,6 +143,17 @@ export default function Navbar() {
             >
               <Plus size={20} /> Create Event
             </Link>
+
+            {user && (
+              <Link 
+                to={`/profile/${user.id}`} 
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 text-base font-medium px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-brand-darkBg text-gray-900 dark:text-white border-t border-gray-100 dark:border-brand-darkBorder mt-2 pt-4"
+              >
+                <UserAvatar name={user.name || user.email || 'user'} size={28} />
+                My Profile
+              </Link>
+            )}
 
             <button 
               onClick={() => { handleLogout(); setMobileMenuOpen(false); }} 
