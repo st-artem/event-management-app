@@ -48,11 +48,12 @@ docker compose up --build
 ---
 
 ## Database Seeding & Default Credentials
-On the first launch, the application automatically populates the PostgreSQL database with sample data (2 Users, 3 Public Events).
+On the first launch, the application automatically populates the PostgreSQL database with sample data (3 Users, 8 Public Events).
 
 You can log in immediately using these test accounts:
-1.  **Email:** `eduard@example.com` | **Password:** `password123` *(Organizer of 2 events)*
-2.  **Email:** `test@example.com` | **Password:** `password123` *(Organizer of 1 event, participant in 1)*
+1.  **Email:** `eduard@example.com` | **Password:** `password123` 
+2.  **Email:** `max@example.com` | **Password:** `password123` 
+3.  **Email:** `anna@example.com` | **Password:** `password123` 
 
 ---
 Developed by st-artem.
