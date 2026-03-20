@@ -3,6 +3,7 @@ import { MessageCircle, X, Send, Loader2, Bot } from 'lucide-react';
 import api from '../api/axios';
 import { type Message } from '../types';
 import ReactMarkdown from 'react-markdown';
+import { useAuthStore } from '../store/authStore';
 
 
 export const AiAssistant: React.FC = () => {
@@ -11,16 +12,20 @@ export const AiAssistant: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   
-  const [messages, setMessages] = useState<Message[]>(() => {
-    const saved = sessionStorage.getItem('ai_chat_history');
-    return saved ? JSON.parse(saved) : [];
-  });
-  
+  const user = useAuthStore((state) => state.user);
+  const storageKey = user?.id ? `ai_chat_history_${user.id}` : null;
+
+  const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    sessionStorage.setItem('ai_chat_history', JSON.stringify(messages));
-  }, [messages]);
+    if (storageKey) {
+      const saved = sessionStorage.getItem(storageKey);
+      setMessages(saved ? JSON.parse(saved) : []);
+    } else {
+      setMessages([]);
+    }
+  }, [storageKey]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -28,7 +33,7 @@ export const AiAssistant: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!query.trim() || !storageKey) return;
 
     const userQuery = query.trim();
     const updatedMessages: Message[] = [...messages, { role: 'user', content: userQuery }];
@@ -38,10 +43,18 @@ export const AiAssistant: React.FC = () => {
     setIsLoading(true);
     setError('');
 
+    sessionStorage.setItem(storageKey, JSON.stringify(updatedMessages));
+
     try {
       const res = await api.post('/ai/ask', { messages: updatedMessages });
       
-      setMessages(prev => [...prev, { role: 'assistant', content: res.data.answer }]);
+      setMessages(prev => {
+        const newMessage: Message = { role: 'assistant', content: res.data.answer };
+        const newMessages = [...prev, newMessage];
+        
+        sessionStorage.setItem(storageKey, JSON.stringify(newMessages));
+        return newMessages;
+      });
     } catch (err: any) {
       console.error('AI Error:', err);
       setError(err.response?.data?.message || 'Oops, something went wrong. Brain temporarily unavailable.');
@@ -49,6 +62,8 @@ export const AiAssistant: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  if (!user) return null;
 
   return (
     <div className="fixed sm:bottom-6 sm:right-6 z-50">
