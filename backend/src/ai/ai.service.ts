@@ -36,7 +36,26 @@ export class AiService {
       tags: e.tags?.map(t => t.name) || []
     })) || [];
 
-    const allPublicEvents = allEventsRaw.map(e => ({
+    const lastUserMessage = messages
+      .filter(m => m.role === 'user')
+      .pop()?.content?.toLowerCase() || '';
+
+    const queryWords = lastUserMessage
+      .split(/[\s,!?]+/)
+      .filter(w => w.length > 2); 
+
+    let relevantEvents = allEventsRaw;
+
+    if (queryWords.length > 0) {
+      relevantEvents = allEventsRaw.filter(e => {
+        const searchString = `${e.title} ${e.tags?.map(t => t.name).join(' ')}`.toLowerCase();
+        return queryWords.some(word => searchString.includes(word));
+      });
+    }
+
+    relevantEvents = relevantEvents.slice(0, 10);
+
+    const filteredPublicEvents = relevantEvents.map(e => ({
       title: e.title,
       date: e.dateTime,
       tags: e.tags?.map(t => t.name) || [],
@@ -48,14 +67,14 @@ export class AiService {
         goingTo: myPlans,
         organizing: myOrganized
       },
-      allPublicEvents: allPublicEvents
+      allPublicEvents: filteredPublicEvents 
     };
 
     const systemPrompt = `
       You are a read-only AI Assistant for an event planning application.
       Current date and time: ${new Date().toLocaleString('en-US')}.
       
-      Here is the JSON data of the user's schedule and all public events (with tags and attendees):
+      Here is the JSON data of the user's schedule and a relevant subset of public events (max 10):
       ${JSON.stringify(contextData)}
 
       RULES & CAPABILITIES:

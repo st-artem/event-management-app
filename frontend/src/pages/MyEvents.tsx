@@ -121,7 +121,7 @@ export default function MyEvents() {
 
   return (
     <div className="min-h-screen bg-brand-white dark:bg-brand-darkBg transition-colors">
-      <main className="max-w-7xl mx-auto px-4 md:px-8 pb-12">
+      <main className="max-w-7xl mx-auto px-4 md:px-8 pt-8 pb-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">My Events</h1>
