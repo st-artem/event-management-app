@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { SeedService } from './seed.service';
 import { User } from './users/entities/user.entity';
 import { Event } from './events/entities/event.entity';
+import { TagsModule } from './tags/tags.module';
+import { AiModule } from './ai/ai.module';
 
 
 @Module({
@@ -30,6 +32,8 @@ import { Event } from './events/entities/event.entity';
     UsersModule,
     EventsModule,
     AuthModule,
+    TagsModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService], 

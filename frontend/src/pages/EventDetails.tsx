@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuthStore } from '../store/authStore';
-import { type Event } from '../types';
-import Navbar from '../components/Navbar';
+import { type Event, type TagOption } from '../types';
 import Loader from '../components/Loader';
 import { Calendar, Clock, MapPin, Users, Trash2, Edit, ArrowLeft, Save, X } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { TagChip } from '../components/TagChip';
+import { TagSelect } from '../components/TagSelect';
 
 
 export default function EventDetails() {
@@ -20,7 +21,27 @@ export default function EventDetails() {
   const [editData, setEditData] = useState({ title: '', description: '' });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  const [availableTags, setAvailableTags] = useState<TagOption[]>([]);
+  const [selectedTags, setSelectedTags] = useState<TagOption[]>([]);
+
   const currentUserId = token ? JSON.parse(atob(token.split('.')[1])).sub : null;
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const res = await api.get(`${import.meta.env.VITE_API_URL}/tags`);
+        if (Array.isArray(res.data)) {
+          const formattedTags = res.data.map((t: any) => ({ label: t.name, value: t.name }));
+          setAvailableTags(formattedTags);
+        } else {
+          setAvailableTags([]);
+        }
+      } catch (error) {
+        console.error('Помилка завантаження тегів:', error);
+      }
+    };
+    fetchTags();
+  }, []);
 
   const fetchEvent = async () => {
     try {
@@ -29,6 +50,10 @@ export default function EventDetails() {
       });
       setEvent(res.data);
       setEditData({ title: res.data.title, description: res.data.description });
+      
+      if (res.data.tags) {
+        setSelectedTags(res.data.tags.map((t: any) => ({ label: t.name, value: t.name })));
+      }
     } catch (error) {
       console.error('Error loading event:', error);
     } finally {
@@ -61,7 +86,12 @@ export default function EventDetails() {
 
   const handleUpdate = async () => {
     try {
-      await api.patch(`${import.meta.env.VITE_API_URL}/events/${id}`, editData, {
+      const payload = {
+        ...editData,
+        tags: selectedTags.map(t => t.value)
+      };
+
+      await api.patch(`${import.meta.env.VITE_API_URL}/events/${id}`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setIsEditing(false);
@@ -110,8 +140,6 @@ export default function EventDetails() {
 
   return (
     <div className="min-h-screen bg-brand-white dark:bg-brand-darkBg transition-colors">
-      <Navbar />
-
       <main className="max-w-4xl mx-auto px-8 pb-12">
         <button onClick={() => navigate(-1)} className="flex items-center text-brand-blue hover:text-brand-blue/80 hover:underline mb-6 transition-all">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to events
@@ -128,6 +156,16 @@ export default function EventDetails() {
                     onChange={(e) => setEditData({...editData, title: e.target.value})}
                     className={`${editInputStyles} text-3xl font-bold mb-4`}
                   />
+                  
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-900 dark:text-gray-200 mb-1">Tags (Max 5)</label>
+                    <TagSelect 
+                      value={selectedTags} 
+                      onChange={setSelectedTags} 
+                      options={availableTags}
+                    />
+                  </div>
+
                   <textarea 
                     value={editData.description}
                     onChange={(e) => setEditData({...editData, description: e.target.value})}
@@ -136,12 +174,24 @@ export default function EventDetails() {
                   />
                   <div className="mt-4 flex gap-2">
                     <button onClick={handleUpdate} className="bg-brand-green hover:opacity-90 transition-opacity text-white px-4 py-2 rounded-lg flex items-center gap-2"><Save className="w-4 h-4"/> Save</button>
-                    <button onClick={() => setIsEditing(false)} className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg flex items-center gap-2"><X className="w-4 h-4"/> Cancel</button>
+                    <button onClick={() => {
+                      setIsEditing(false);
+                      if (event.tags) setSelectedTags(event.tags.map((t: any) => ({ label: t.name, value: t.name })));
+                    }} className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg flex items-center gap-2"><X className="w-4 h-4"/> Cancel</button>
                   </div>
                 </div>
               ) : (
                 <div className="flex-1 pr-4">
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 transition-colors">{event.title}</h1>
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-3 transition-colors">{event.title}</h1>
+                  
+                  {event.tags && event.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {event.tags.map(tag => (
+                        <TagChip key={tag.id} name={tag.name} />
+                      ))}
+                    </div>
+                  )}
+
                   <p className="text-gray-600 dark:text-brand-darkText leading-relaxed transition-colors">{event.description}</p>
                 </div>
               )}
