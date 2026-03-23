@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { LogOut, Plus, Calendar as CalendarIcon, List, Sun, Moon, Menu, X } from 'lucide-react';
+import { UserAvatar } from './UserAvatar'; 
 
 export default function Navbar() {
+  const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
+  
   const navigate = useNavigate();
-  const [themeOpen, setThemeOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false); 
 
   useEffect(() => {
@@ -20,6 +22,16 @@ export default function Navbar() {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const toggleTheme = () => {
+    if (document.documentElement.classList.contains('dark')) {
+      document.documentElement.classList.remove('dark');
+      localStorage.theme = 'light';
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.theme = 'dark';
+    }
   };
 
   const navLinkStyles = ({ isActive }: { isActive: boolean }) =>
@@ -39,61 +51,79 @@ export default function Navbar() {
   return (
     <nav className="bg-brand-white dark:bg-brand-darkCard border-b border-brand-gray dark:border-brand-darkBorder shadow-sm transition-colors z-50 relative">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
-        <div className="flex justify-between items-center py-4">
-          
-          <Link to="/" className="text-xl font-bold text-gray-900 dark:text-white transition-colors hover:opacity-80">
-            Event<span className="text-brand-blue">Hub</span>
+        <div className="flex justify-between items-center py-3"> 
+
+          <Link to="/" className="flex items-center gap-2.5 text-2xl font-bold text-gray-900 dark:text-white transition-colors hover:opacity-80">          
+            <img 
+              src="/event-logo.png" 
+              alt="EventHub Logo" 
+              className="w-11 h-11 object-contain shrink-0" 
+            />
+            <span className="mt-0.5">Event<span className="text-brand-blue">Hub</span></span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-2">
-            <NavLink to="/" end className={navLinkStyles}>
-              <List size={18} /> Events
-            </NavLink>
+          <div className="hidden md:flex items-center gap-4">
             
-            <NavLink to="/my-events" className={navLinkStyles}>
-              <CalendarIcon size={18} /> My Events
-            </NavLink>
+            <div className="flex items-center gap-2">
+              <NavLink to="/" end className={navLinkStyles}>
+                <List size={18} /> Events
+              </NavLink>
+              
+              <NavLink to="/my-events" className={navLinkStyles}>
+                <CalendarIcon size={18} /> My Events
+              </NavLink>
+            </div>
 
-            <Link 
-              to="/create-event" 
-              className="ml-4 bg-brand-blue hover:bg-brand-blue/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all shadow-md hover:shadow-lg"
-            >
-              <Plus size={18} /> Create Event
-            </Link>
-
-            <div className="relative ml-2">
-              <button 
-                onClick={() => setThemeOpen(!themeOpen)}
-                className="p-2 text-gray-600 dark:text-brand-darkText hover:text-brand-blue dark:hover:text-brand-blue transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-brand-darkBg flex items-center gap-2"
+            <div className="flex items-center gap-3">
+              <Link 
+                to="/create-event" 
+                className="bg-brand-blue hover:bg-brand-blue/90 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all shadow-md hover:shadow-lg"
               >
-                <span className="dark:hidden"><Sun size={20} /></span>
-                <span className="hidden dark:block"><Moon size={20} /></span>
-              </button>
+                <Plus size={18} /> Create Event
+              </Link>
 
-              {themeOpen && (
-                <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-brand-darkCard border border-gray-200 dark:border-brand-darkBorder rounded-xl shadow-lg py-2 z-50">
-                  <button onClick={() => { document.documentElement.classList.remove('dark'); localStorage.theme = 'light'; setThemeOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-brand-darkBg">Light</button>
-                  <button onClick={() => { document.documentElement.classList.add('dark'); localStorage.theme = 'dark'; setThemeOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-brand-darkBg">Dark</button>
-                </div>
-              )}
+              <button 
+                onClick={toggleTheme}
+                className="p-2 text-gray-600 dark:text-brand-darkText hover:text-brand-blue dark:hover:text-brand-blue transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-brand-darkBg flex items-center justify-center"
+                title="Toggle theme"
+              >
+                <span className="dark:hidden"><Moon size={20} /></span>
+                <span className="hidden dark:block"><Sun size={20} /></span>
+              </button>
             </div>
             
-            <button onClick={handleLogout} className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-brand-darkText hover:text-brand-orange dark:hover:text-brand-orange ml-2 pl-4 border-l border-brand-gray dark:border-brand-darkBorder transition-colors">
-              <LogOut size={18} /> 
-            </button>
+            {user && (
+              <div className="h-8 w-[1px] bg-brand-gray dark:bg-brand-darkBorder mx-2"></div>
+            )}
+
+            {user && (
+              <div className="flex items-center gap-3">
+                <Link 
+                  to={`/profile/${user.id}`} 
+                  className="hover:opacity-80 transition-opacity"
+                  title="My Profile"
+                >
+                  <UserAvatar name={user.email || user.name || 'user'} size={36} />
+                </Link>
+                
+                <button 
+                  onClick={handleLogout} 
+                  className="flex items-center justify-center p-2 text-gray-600 dark:text-brand-darkText hover:text-red-500 dark:hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                  title="Logout"
+                >
+                  <LogOut size={18} /> 
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="md:hidden flex items-center gap-4">
             <button 
-              onClick={() => {
-                const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-                if (newTheme === 'dark') { document.documentElement.classList.add('dark'); localStorage.theme = 'dark'; }
-                else { document.documentElement.classList.remove('dark'); localStorage.theme = 'light'; }
-              }}
+              onClick={toggleTheme}
               className="p-2 text-gray-600 dark:text-gray-300"
             >
-              <span className="dark:hidden"><Sun size={24} /></span>
-              <span className="hidden dark:block"><Moon size={24} /></span>
+              <span className="dark:hidden"><Moon size={24} /></span>
+              <span className="hidden dark:block"><Sun size={24} /></span>
             </button>
 
             <button 
@@ -124,6 +154,17 @@ export default function Navbar() {
             >
               <Plus size={20} /> Create Event
             </Link>
+
+            {user && (
+              <Link 
+                to={`/profile/${user.id}`} 
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 text-base font-medium px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-brand-darkBg text-gray-900 dark:text-white border-t border-gray-100 dark:border-brand-darkBorder mt-2 pt-4"
+              >
+                <UserAvatar name={user.email || user.name || 'user'} size={28} />
+                My Profile
+              </Link>
+            )}
 
             <button 
               onClick={() => { handleLogout(); setMobileMenuOpen(false); }} 

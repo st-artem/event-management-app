@@ -1,5 +1,5 @@
-import { Controller, Post, Body, Get, Delete, Param, UsePipes, UseGuards, Request as Req, Patch } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { Controller, Post, Body, Get, Delete, Param, UsePipes, UseGuards, Request as Req, Patch, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { EventsService } from './events.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { YupValidationPipe } from '../common/pipes/yup-validation.pipe';
@@ -25,6 +25,7 @@ export class EventsController {
         location: { type: 'string', example: 'Vinnytsia IT Hub' },
         capacity: { type: 'number', example: 100 },
         isPublic: { type: 'boolean', example: true },
+        tags: { type: 'array', items: { type: 'string' }, example: ['IT', 'networking'] }, 
       },
     },
   })
@@ -33,9 +34,11 @@ export class EventsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all events' })
-  findAll() {
-    return this.eventsService.findAll();
+  @ApiOperation({ summary: 'Get all events (optionally filtered by tags)' })
+  @ApiQuery({ name: 'tags', required: false, type: String, description: 'Comma-separated tags (e.g., tech,music)' })
+  findAll(@Query('tags') tags?: string) {
+    const tagsArray = tags ? tags.split(',').map(t => t.trim()) : undefined;
+    return this.eventsService.findAll(tagsArray);
   }
 
   @Get(':id')
@@ -70,6 +73,7 @@ export class EventsController {
       properties: {
         title: { type: 'string', example: 'Updated Title' },
         description: { type: 'string', example: 'Updated Description' },
+        tags: { type: 'array', items: { type: 'string' }, example: ['updated-tag'] },
       },
     },
   })

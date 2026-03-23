@@ -13,6 +13,7 @@ export interface Event {
   capacity: number | null;
   organizer: User;
   participants: User[];
+  tags?: Tag[];
 }
 
 export interface EventCardProps {
@@ -33,4 +34,69 @@ export interface EmptyStateProps {
   title: string;
   description?: string;
   action?: any;
+}
+
+export interface Tag {
+  id: string;
+  name: string;
+}
+
+export interface TagChipProps {
+  name: string;
+  className?: string; 
+}
+
+export interface TagOption {
+  label: string;
+  value: string;
+}
+
+export interface TagSelectProps {
+  value: TagOption[];
+  onChange: (newValue: TagOption[]) => void;
+  options?: TagOption[];
+  maxTags?: number;
+  placeholder?: string;
+}
+
+export type Message = {
+  role: 'user' | 'assistant';
+  content: string;
+};
+
+export interface UserAvatarProps {
+  name: string; 
+  size?: number; 
+  variant?: 'beam' | 'marble' | 'pixel' | 'sunset' | 'ring' | 'bauhaus';
+}
+
+export interface AuthState {
+  token: string | null;
+  isAuthenticated: boolean;
+  user: User | null;
+  login: (token: string) => void;
+  logout: () => void;
+}
+
+export interface FullUser extends User {
+  bio?: string;
+  location?: string;
+  github?: string;
+  website?: string;
+  telegram?: string;
+}
+
+export interface ProfileStats {
+  organized: number;
+  attended: number;
+  topTags: { name: string; count: number }[];
+}
+
+export interface EditProfileData {
+  name?: string;
+  bio?: string;
+  location?: string;
+  github?: string;
+  website?: string;
+  telegram?: string;
 }
