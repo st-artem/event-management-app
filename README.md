@@ -6,13 +6,17 @@ This project allows users to discover public events, manage their own events (cr
 ## Features Implemented
 - **Authentication**: JWT-based session management, securely hashed passwords (Argon2).
 - **Events (Public List)**: Discover, join, and leave events. Capacity validation ("Full" status).
+- **Private Events**: Hidden from the public list, available via direct link and in "My Events".
+- **Tags**: Up to 5 tags per event, filtering by tags.
+- **AI Assistant**: Chat about your schedule and events (Groq, `llama-3.1-8b-instant`).
+- **User Profile**: Bio, links, and activity stats.
 - **Event Management**: Create events (with future-date validation), edit, and delete (organizer only).
 - **My Events (Calendar)**: Monthly and Weekly views of organized and attended events.
 - **Error Handling**: Custom global exception filter for normalized API error responses.
 - **Seeding**: Automated database population on the first launch.
 
 ## Tech Stack
-- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, Zustand, React Router DOM.
+- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Zustand, React Router DOM.
 - **Backend**: Node.js, NestJS, PostgreSQL, TypeORM, Yup Validation, Swagger.
 - **Infrastructure**: Docker & Docker Compose.
 
@@ -29,21 +33,29 @@ cd event-management-app
 ```
 
 ### 2. Environment Variables
-The repository includes `.env.example` file. For a quick Docker launch, the default configurations in `docker-compose.yml` are ready to go. 
-If you want to set them explicitly, copy the example:
+`docker-compose.yml` reads variables from `.env`, so this step is required. Copy the example (default values work for a local launch):
 ```bash
-cp .env.example .env`
+cp .env.example .env
 ```
+To enable the AI Assistant, set `GROQ_API_KEY` in `.env` (get a key at https://console.groq.com/keys). Without it the rest of the app works as usual.
 
 ### 3. Launch the Application
 Run the following command from the root directory:
 ```bash
-docker compose up --build 
+docker compose up --build
 ```
 
 ### 4. Access the App
 * **Frontend (Web App):** http://localhost:5173
-* **Swagger API Docs:** http://localhost:3000/api
+* **API:** http://localhost:3000/api
+* **Swagger API Docs:** http://localhost:3000/api/docs
+
+### 5. Run Tests
+```bash
+cd backend
+npm install
+npm test
+```
 
 ---
 

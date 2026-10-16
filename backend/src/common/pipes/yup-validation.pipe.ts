@@ -1,5 +1,5 @@
 import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
-import { ObjectSchema } from 'yup';
+import { ObjectSchema, ValidationError } from 'yup';
 
 @Injectable()
 export class YupValidationPipe implements PipeTransform {
@@ -7,10 +7,13 @@ export class YupValidationPipe implements PipeTransform {
 
   async transform(value: any, metadata: ArgumentMetadata) {
     try {
-      await this.schema.validate(value, { abortEarly: false });
-      return value;
+      // stripUnknown відкидає поля, яких немає в схемі (passwordHash, organizer, id тощо)
+      return await this.schema.validate(value, { abortEarly: false, stripUnknown: true });
     } catch (err) {
-      throw new BadRequestException({ message: 'Validation failed', errors: err.errors });
+      if (err instanceof ValidationError) {
+        throw new BadRequestException({ message: err.errors.join('; '), errors: err.errors });
+      }
+      throw err;
     }
   }
 }

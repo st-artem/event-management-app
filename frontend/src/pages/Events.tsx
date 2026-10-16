@@ -19,14 +19,12 @@ export default function Events() {
   const token = useAuthStore((state) => state.token);
   const navigate = useNavigate();
 
-  const currentUserId = token ? JSON.parse(atob(token.split('.')[1])).sub : null;
+  const currentUserId = useAuthStore((state) => state.user?.id ?? null);
 
   useEffect(() => {
   const fetchGlobalTags = async () => {
     try {
-      const res = await api.get(`${import.meta.env.VITE_API_URL}/tags`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get(`/tags`);
       
       if (Array.isArray(res.data) && res.data.length > 0) {
         setAvailableTags(res.data.map((t: any) => ({ label: t.name, value: t.name })));
@@ -48,16 +46,14 @@ export default function Events() {
 
   const fetchEvents = async () => {
     try {
-      let url = `${import.meta.env.VITE_API_URL}/events`;
+      let url = `/events`;
       
       if (selectedTags.length > 0) {
         const tagNames = selectedTags.map(t => t.value).join(',');
         url += `?tags=${tagNames}`;
       }
 
-      const res = await api.get(url, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get(url);
       setEvents(res.data);
     } catch (error) {
       console.error('Error fetching events:', error);
@@ -70,9 +66,7 @@ export default function Events() {
 
   const handleJoin = async (eventId: number) => {
     try {
-      await api.post(`${import.meta.env.VITE_API_URL}/events/${eventId}/join`, {}, { 
-        headers: { Authorization: `Bearer ${token}` } 
-      });
+      await api.post(`/events/${eventId}/join`, {});
       fetchEvents(); 
       toast.success('Successfully joined the event!');
     } catch (error: any) {
@@ -82,9 +76,7 @@ export default function Events() {
 
   const handleLeave = async (eventId: number) => {
     try {
-      await api.post(`${import.meta.env.VITE_API_URL}/events/${eventId}/leave`, {}, { 
-        headers: { Authorization: `Bearer ${token}` } 
-      });
+      await api.post(`/events/${eventId}/leave`, {});
       fetchEvents(); 
       toast.success('Successfully left the event!');
     } catch (error: any) {

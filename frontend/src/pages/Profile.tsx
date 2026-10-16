@@ -24,9 +24,7 @@ export default function Profile() {
     const fetchProfileData = async () => {
       setIsLoading(true);
       try {
-        const userRes = await api.get<FullUser>(`${import.meta.env.VITE_API_URL}/users/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const userRes = await api.get<FullUser>(`/users/${id}`);
         setProfileUser(userRes.data);
       } catch (err) {
         console.error('User fetch error:', err);
@@ -36,9 +34,7 @@ export default function Profile() {
       }
 
       try {
-        const eventsRes = await api.get<Event[]>(`${import.meta.env.VITE_API_URL}/events`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const eventsRes = await api.get<Event[]>(`/events`);
         const allEvents = eventsRes.data;
 
         const organized = allEvents.filter(e => e.organizer?.id === Number(id));

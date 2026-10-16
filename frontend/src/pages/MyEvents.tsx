@@ -39,9 +39,7 @@ export default function MyEvents() {
   useEffect(() => {
     const fetchMyEvents = async () => {
       try {
-        const res = await api.get(`${import.meta.env.VITE_API_URL}/users/me/events`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await api.get(`/users/me/events`);
 
         const data = res.data;
         let combinedEvents: Event[] = [];
@@ -57,22 +55,7 @@ export default function MyEvents() {
 
         setEvents(combinedEvents);
       } catch (error) {
-        console.warn('Endpoint /users/me/events is not responding, using fallback...');
-        
-        try {
-          const fallbackRes = await api.get(`${import.meta.env.VITE_API_URL}/events`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          const currentUserId = token ? JSON.parse(atob(token.split('.')[1])).sub : null;
-          
-          const myFilteredEvents = fallbackRes.data.filter((e: any) => 
-            e.organizer?.id === currentUserId || 
-            e.participants?.some((p: any) => p.id === currentUserId)
-          );
-          setEvents(myFilteredEvents);
-        } catch (err) {
-          console.error('Fallback loading error:', err);
-        }
+        console.error('Error loading my events:', error);
       } finally {
         setLoading(false);
       }

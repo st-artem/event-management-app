@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { X, Github, Globe, Send, MapPin, FileText, User } from 'lucide-react';
-import { useAuthStore } from '../store/authStore';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 import { type EditProfileData } from '../types';
@@ -14,7 +13,6 @@ interface EditProfileModalProps {
 }
 
 export function EditProfileModal({ isOpen, onClose, initialData, onSaved }: EditProfileModalProps) {
-  const token = useAuthStore((state) => state.token);
   const [form, setForm] = useState<EditProfileData>(initialData);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -27,9 +25,7 @@ export function EditProfileModal({ isOpen, onClose, initialData, onSaved }: Edit
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const res = await api.patch(`${import.meta.env.VITE_API_URL}/users/me`, form, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.patch(`/users/me`, form);
       onSaved(res.data);
       toast.success('Profile updated!');
       onClose();

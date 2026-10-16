@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { EventsService } from '../events/events.service'; 
 import Groq from 'groq-sdk';
@@ -6,9 +6,10 @@ import Groq from 'groq-sdk';
 
 @Injectable()
 export class AiService {
-  private groq = new Groq({
-    apiKey: process.env.GROQ_API_KEY,
-  });
+  // Без ключа бекенд стартує, а вимкнеться лише асистент
+  private groq = process.env.GROQ_API_KEY
+    ? new Groq({ apiKey: process.env.GROQ_API_KEY })
+    : null;
 
   constructor(
     private usersService: UsersService,
@@ -16,6 +17,11 @@ export class AiService {
   ) {}
 
   async askAssistant(userId: number, messages: any[]) {
+    const groq = this.groq;
+    if (!groq) {
+      throw new ServiceUnavailableException('AI assistant is not configured (GROQ_API_KEY is missing)');
+    }
+
     const userWithEvents = await this.usersService.getMyEvents(userId);
 
     if (!userWithEvents) {
@@ -59,7 +65,7 @@ export class AiService {
       title: e.title,
       date: e.dateTime,
       tags: e.tags?.map(t => t.name) || [],
-      attendees: e.participants?.map(a => a.email) || [] 
+      attendees: e.participants?.map(a => a.name) || []
     }));
 
     const contextData = {
@@ -85,7 +91,7 @@ export class AiService {
       "Sorry, I didn’t understand that. Please try rephrasing your question."
     `;
 
-    const chatCompletion = await this.groq.chat.completions.create({
+    const chatCompletion = await groq.chat.completions.create({
       messages: [
         { role: 'system', content: systemPrompt }, 
         ...messages      

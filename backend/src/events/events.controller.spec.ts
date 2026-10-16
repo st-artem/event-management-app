@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 describe('EventsController', () => {
   let controller: EventsController;
@@ -8,8 +9,11 @@ describe('EventsController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EventsController],
-      providers: [EventsService],
-    }).compile();
+      providers: [{ provide: EventsService, useValue: {} }],
+    })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get<EventsController>(EventsController);
   });

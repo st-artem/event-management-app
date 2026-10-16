@@ -14,7 +14,6 @@ import { UserAvatar } from '../components/UserAvatar';
 export default function EventDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const token = useAuthStore((state) => state.token);
   
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,12 +24,12 @@ export default function EventDetails() {
   const [availableTags, setAvailableTags] = useState<TagOption[]>([]);
   const [selectedTags, setSelectedTags] = useState<TagOption[]>([]);
 
-  const currentUserId = token ? JSON.parse(atob(token.split('.')[1])).sub : null;
+  const currentUserId = useAuthStore((state) => state.user?.id ?? null);
 
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const res = await api.get(`${import.meta.env.VITE_API_URL}/tags`);
+        const res = await api.get(`/tags`);
         if (Array.isArray(res.data)) {
           setAvailableTags(res.data.map((t: any) => ({ label: t.name, value: t.name })));
         } else {
@@ -45,9 +44,7 @@ export default function EventDetails() {
 
   const fetchEvent = async () => {
     try {
-      const res = await api.get(`${import.meta.env.VITE_API_URL}/events/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get(`/events/${id}`);
       setEvent(res.data);
       setEditData({ title: res.data.title, description: res.data.description });
       if (res.data.tags) {
@@ -66,9 +63,7 @@ export default function EventDetails() {
 
   const confirmDelete = async () => {
     try {
-      await api.delete(`${import.meta.env.VITE_API_URL}/events/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/events/${id}`);
       toast.success('Event successfully deleted!');
       navigate('/');
     } catch (error: any) {
@@ -80,11 +75,9 @@ export default function EventDetails() {
 
   const handleUpdate = async () => {
     try {
-      await api.patch(`${import.meta.env.VITE_API_URL}/events/${id}`, {
+      await api.patch(`/events/${id}`, {
         ...editData,
         tags: selectedTags.map(t => t.value)
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       setIsEditing(false);
       fetchEvent();
@@ -96,9 +89,7 @@ export default function EventDetails() {
 
   const handleLeave = async () => {
     try {
-      await api.post(`${import.meta.env.VITE_API_URL}/events/${id}/leave`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post(`/events/${id}/leave`, {});
       fetchEvent();
       toast.success('Successfully left the event!');
     } catch (error) {
@@ -108,9 +99,7 @@ export default function EventDetails() {
 
   const handleJoin = async () => {
     try {
-      await api.post(`${import.meta.env.VITE_API_URL}/events/${id}/join`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post(`/events/${id}/join`, {});
       fetchEvent();
       toast.success('Successfully joined the event!');
     } catch (error: any) {

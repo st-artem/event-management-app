@@ -28,9 +28,7 @@ export default function CreateEvent() {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const res = await api.get(`${import.meta.env.VITE_API_URL}/tags`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await api.get(`/tags`);
         
         if (Array.isArray(res.data)) {
           setAvailableTags(res.data.map((t: any) => ({ label: t.name, value: t.name })));
@@ -53,7 +51,7 @@ export default function CreateEvent() {
       const tags = selectedTags.map(tag => tag.value);
 
       const res = await api.post(
-        `${import.meta.env.VITE_API_URL}/events`,
+        `/events`,
         {
           title,
           description,
@@ -62,8 +60,7 @@ export default function CreateEvent() {
           capacity: capacity === '' ? null : Number(capacity),
           isPublic,
           tags: tags, 
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
+        }
       );
 
       navigate(`/events/${res.data.id}`);

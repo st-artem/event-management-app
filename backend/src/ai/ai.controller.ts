@@ -1,11 +1,11 @@
 import { Controller, Post, Body, UseGuards, Request, BadRequestException } from '@nestjs/common';
 import { AiService } from './ai.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('AI Assistant') 
 @ApiBearerAuth() 
-@Controller('api/ai')
+@Controller('ai')
 export class AiController {
   constructor(private readonly aiService: AiService) {}
 
@@ -33,7 +33,17 @@ export class AiController {
       throw new BadRequestException('Історія повідомлень не може бути порожньою');
     }
 
-    const userId = req.user.sub || req.user.id; 
-    return this.aiService.askAssistant(userId, messages);
+    // Лише user/assistant (без підміни system prompt) і останні 20 повідомлень
+    const safeMessages = messages
+      .filter(m => (m?.role === 'user' || m?.role === 'assistant') && typeof m.content === 'string')
+      .slice(-20)
+      .map(m => ({ role: m.role, content: m.content.slice(0, 2000) }));
+
+    if (safeMessages.length === 0) {
+      throw new BadRequestException('Історія повідомлень не може бути порожньою');
+    }
+
+    const userId = req.user.sub || req.user.id;
+    return this.aiService.askAssistant(userId, safeMessages);
   }
 }

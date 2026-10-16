@@ -2,8 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { type UpdateProfileDto } from 'src/types';
-
+import { type UpdateProfileDto } from '../types';
 
 @Injectable()
 export class UsersService {
@@ -16,26 +15,24 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
+  // passwordHash має select: false, тому для логіну підтягуємо його явно
+  async findByEmailWithPassword(email: string): Promise<User | null> {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .addSelect('user.passwordHash')
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
   async create(name: string, email: string, passwordHash: string): Promise<User> {
     const newUser = this.usersRepository.create({ name, email, passwordHash });
     return this.usersRepository.save(newUser);
   }
 
-  async findById(userId: number): Promise<Omit<User, 'passwordHash'>> {
-    const user = await this.usersRepository.findOne({
-      where: { id: userId },
-      relations: [
-        'organizedEvents',
-        'organizedEvents.tags',
-        'attendedEvents',
-        'attendedEvents.tags',
-      ],
-    });
-
+  async findById(userId: number): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException(`User #${userId} not found`);
-
-    const { passwordHash, ...safeUser } = user;
-    return safeUser;
+    return user;
   }
 
   async getMyEvents(userId: number) {
@@ -50,14 +47,9 @@ export class UsersService {
     });
   }
 
-  async updateProfile(userId: number, dto: UpdateProfileDto): Promise<Omit<User, 'passwordHash'>> {
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
-    if (!user) throw new NotFoundException(`User #${userId} not found`);
-
+  async updateProfile(userId: number, dto: UpdateProfileDto): Promise<User> {
+    const user = await this.findById(userId);
     Object.assign(user, dto);
-    await this.usersRepository.save(user);
-
-    const { passwordHash, ...safeUser } = user;
-    return safeUser;
+    return this.usersRepository.save(user);
   }
 }

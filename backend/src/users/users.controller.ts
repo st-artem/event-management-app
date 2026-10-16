@@ -11,8 +11,10 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { type UpdateProfileDto } from 'src/types';
+import { type UpdateProfileDto } from '../types';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { YupValidationPipe } from '../common/pipes/yup-validation.pipe';
+import { updateProfileSchema } from './dto/user.schema';
 
 @ApiTags('Users')
 @Controller('users')
@@ -32,7 +34,7 @@ export class UsersController {
   @Patch('me')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  updateProfile(@Req() req: any, @Body() dto: UpdateProfileDto) {
+  updateProfile(@Req() req: any, @Body(new YupValidationPipe(updateProfileSchema)) dto: UpdateProfileDto) {
     this.logger.log(`PATCH /users/me — userId: ${req.user.sub}`);
     return this.usersService.updateProfile(req.user.sub, dto);
   }

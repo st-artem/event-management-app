@@ -38,7 +38,7 @@ function App() {
             <Route path="/my-events" element={<ProtectedRoute><MyEvents /></ProtectedRoute>} />
             <Route path="/create-event" element={<ProtectedRoute><CreateEvent /></ProtectedRoute>} />
             <Route path="/events/:id" element={<ProtectedRoute><EventDetails /></ProtectedRoute>} />
-            <Route path="/profile/:id" element={<Profile />} />
+            <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           </Route>
         </Routes>
       </div>
