@@ -77,7 +77,7 @@ export class EventsController {
     },
   })
   update(@Param('id', ParseIntPipe) id: number, @Body(new YupValidationPipe(updateEventSchema)) body: any, @Req() req: any) {
-    return this.eventsService.update(id, body, req.user.sub);
+    return this.eventsService.update(id, body, req.user.sub, req.user.role === 'admin');
   }
 
   @Delete(':id')
@@ -85,6 +85,6 @@ export class EventsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete an event' })
   remove(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
-    return this.eventsService.remove(id, req.user.sub);
+    return this.eventsService.remove(id, req.user.sub, req.user.role === 'admin');
   }
 }

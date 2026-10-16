@@ -132,10 +132,10 @@ export class EventsService {
     return this.findOne(eventId);
   }
 
-  async update(id: number, updateEventDto: any, userId: number): Promise<Event> {
+  async update(id: number, updateEventDto: any, userId: number, isAdmin = false): Promise<Event> {
     const event = await this.findOne(id);
 
-    if (event.organizer.id !== userId) {
+    if (event.organizer.id !== userId && !isAdmin) {
       throw new ForbiddenException('You can only edit your own events');
     }
 
@@ -156,10 +156,10 @@ export class EventsService {
     return this.eventsRepository.save(event);
   }
 
-  async remove(id: number, userId: number): Promise<void> {
+  async remove(id: number, userId: number, isAdmin = false): Promise<void> {
     const event = await this.findOne(id);
 
-    if (event.organizer.id !== userId) {
+    if (event.organizer.id !== userId && !isAdmin) {
       throw new ForbiddenException('You can only delete your own events');
     }
 

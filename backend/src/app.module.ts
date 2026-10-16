@@ -12,6 +12,7 @@ import { Event } from './events/entities/event.entity';
 import { Tag } from './tags/entities/tag.entity';
 import { TagsModule } from './tags/tags.module';
 import { AiModule } from './ai/ai.module';
+import { AdminModule } from './admin/admin.module';
 
 
 @Module({
@@ -35,6 +36,7 @@ import { AiModule } from './ai/ai.module';
     AuthModule,
     TagsModule,
     AiModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService], 

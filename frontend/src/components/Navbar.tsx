@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { LogOut, Plus, Calendar as CalendarIcon, List, Sun, Moon, Menu, X } from 'lucide-react';
+import { LogOut, Plus, Calendar as CalendarIcon, List, Sun, Moon, Menu, X, Shield } from 'lucide-react';
 import { UserAvatar } from './UserAvatar'; 
 
 export default function Navbar() {
@@ -72,6 +72,12 @@ export default function Navbar() {
               <NavLink to="/my-events" className={navLinkStyles}>
                 <CalendarIcon size={18} /> My Events
               </NavLink>
+
+              {user?.role === 'admin' && (
+                <NavLink to="/admin" className={navLinkStyles}>
+                  <Shield size={18} /> Admin
+                </NavLink>
+              )}
             </div>
 
             <div className="flex items-center gap-3">
@@ -146,6 +152,12 @@ export default function Navbar() {
             <NavLink to="/my-events" className={mobileNavLinkStyles} onClick={() => setMobileMenuOpen(false)}>
               <CalendarIcon size={20} /> My Events
             </NavLink>
+
+            {user?.role === 'admin' && (
+              <NavLink to="/admin" className={mobileNavLinkStyles} onClick={() => setMobileMenuOpen(false)}>
+                <Shield size={20} /> Admin
+              </NavLink>
+            )}
 
             <Link 
               to="/create-event" 

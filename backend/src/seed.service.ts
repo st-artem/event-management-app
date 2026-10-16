@@ -18,7 +18,29 @@ export class SeedService implements OnApplicationBootstrap {
 
   async onApplicationBootstrap() {
     const usersCount = await this.userRepository.count();
-    if (usersCount > 0) return;
+    if (usersCount === 0) {
+      await this.seedData();
+    }
+
+    await this.ensureAdmin();
+  }
+
+  // Адмін створюється і для вже заповненої бази
+  private async ensureAdmin() {
+    const adminExists = await this.userRepository.exists({ where: { role: 'admin' } });
+    if (adminExists) return;
+
+    await this.userRepository.save({
+      email: 'admin@example.com',
+      passwordHash: await argon2.hash('admin123'),
+      name: 'Admin',
+      role: 'admin',
+    });
+
+    this.logger.log('Створено адміністратора: admin@example.com / admin123');
+  }
+
+  private async seedData() {
 
     this.logger.log('База даних порожня. Починаю генерацію тестових даних (Seeding)...');
 

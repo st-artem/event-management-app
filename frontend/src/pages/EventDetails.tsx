@@ -25,6 +25,7 @@ export default function EventDetails() {
   const [selectedTags, setSelectedTags] = useState<TagOption[]>([]);
 
   const currentUserId = useAuthStore((state) => state.user?.id ?? null);
+  const isAdmin = useAuthStore((state) => state.user?.role === 'admin');
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -175,7 +176,7 @@ export default function EventDetails() {
                 </div>
               )}
 
-              {isOrganizer && !isEditing && (
+              {(isOrganizer || isAdmin) && !isEditing && (
                 <div className="flex gap-2">
                   <button onClick={() => setIsEditing(true)} className="p-2 text-brand-blue bg-brand-blue/10 dark:bg-brand-blue/20 rounded-lg hover:bg-brand-blue/20 dark:hover:bg-brand-blue/30 transition-colors">
                     <Edit className="w-5 h-5" />

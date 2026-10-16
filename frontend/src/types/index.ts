@@ -2,11 +2,13 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  role?: 'user' | 'admin';
 }
 
 export interface Event {
   id: number;
   title: string;
+  isPublic?: boolean;
   description: string;
   dateTime: string;
   location: string;

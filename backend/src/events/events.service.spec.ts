@@ -165,6 +165,14 @@ describe('EventsService', () => {
       await expect(service.remove(999, ORGANIZER_ID)).rejects.toThrow(NotFoundException);
     });
 
+    it('should let admin delete any event', async () => {
+      eventsRepository.findOne.mockResolvedValue(buildEvent());
+
+      await service.remove(10, USER_ID, true);
+
+      expect(eventsRepository.remove).toHaveBeenCalled();
+    });
+
     it('should forbid deleting someone else event', async () => {
       eventsRepository.findOne.mockResolvedValue(buildEvent());
 

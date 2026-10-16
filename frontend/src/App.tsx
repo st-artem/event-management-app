@@ -9,11 +9,18 @@ import MyEvents from './pages/MyEvents';
 import CreateEvent from './pages/CreateEvent';
 import EventDetails from './pages/EventDetails';
 import Profile from './pages/Profile';
+import AdminPanel from './pages/AdminPanel';
 
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
+};
+
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const user = useAuthStore((state) => state.user);
+  if (!user) return <Navigate to="/login" replace />;
+  return user.role === 'admin' ? <>{children}</> : <Navigate to="/" replace />;
 };
 
 
@@ -39,6 +46,7 @@ function App() {
             <Route path="/create-event" element={<ProtectedRoute><CreateEvent /></ProtectedRoute>} />
             <Route path="/events/:id" element={<ProtectedRoute><EventDetails /></ProtectedRoute>} />
             <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
           </Route>
         </Routes>
       </div>

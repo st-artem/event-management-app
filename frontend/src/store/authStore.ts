@@ -9,7 +9,8 @@ const parseJwt = (token: string | null): User | null => {
     return {
       id: Number(payload.id || payload.sub), 
       name: payload.name || payload.username || 'User',
-      email: payload.email || ''
+      email: payload.email || '',
+      role: payload.role === 'admin' ? 'admin' : 'user',
     };
   } catch (e) {
     return null;

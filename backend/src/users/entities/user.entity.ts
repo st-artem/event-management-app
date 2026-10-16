@@ -15,6 +15,9 @@ export class User {
   @Column({ select: false })
   passwordHash: string;
 
+  @Column({ default: 'user' })
+  role: 'user' | 'admin';
+
   @Column({ nullable: true })
   bio: string;
 

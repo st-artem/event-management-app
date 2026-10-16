@@ -10,6 +10,7 @@ This project allows users to discover public events, manage their own events (cr
 - **Tags**: Up to 5 tags per event, filtering by tags.
 - **AI Assistant**: Chat about your schedule and events (Groq, `llama-3.1-8b-instant`).
 - **User Profile**: Bio, links, and activity stats.
+- **Admin Panel** (`/admin`): Manage users (change role, delete) and moderate any event, including private ones.
 - **Event Management**: Create events (with future-date validation), edit, and delete (organizer only).
 - **My Events (Calendar)**: Monthly and Weekly views of organized and attended events.
 - **Error Handling**: Custom global exception filter for normalized API error responses.
@@ -66,6 +67,9 @@ You can log in immediately using these test accounts:
 1.  **Email:** `eduard@example.com` | **Password:** `password123` 
 2.  **Email:** `max@example.com` | **Password:** `password123` 
 3.  **Email:** `anna@example.com` | **Password:** `password123` 
+
+Administrator account (created on startup if the database has no admin):
+* **Email:** `admin@example.com` | **Password:** `admin123`
 
 ---
 Developed by st-artem.
